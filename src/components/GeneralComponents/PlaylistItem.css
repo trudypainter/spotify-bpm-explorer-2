@@ -1,0 +1,12 @@
+.playlistDiv {
+  line-height: 14px;
+  width: 275px;
+  margin: 1px;
+  padding: 2.5px;
+  height: 14px;
+  overflow: hidden;
+}
+.playlistDiv:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

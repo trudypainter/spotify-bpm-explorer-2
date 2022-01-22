@@ -1,0 +1,42 @@
+.bottomBar {
+  position: absolute;
+  top: calc(100vh - 70px);
+  left: 0px;
+
+  height: 70px;
+  width: 100vw;
+  background-color: black;
+
+  display: flex;
+}
+.currentlyPlayingContainer {
+  width: calc(100vw - 150px);
+  /* background-color: burlywood; */
+}
+.currentlyPlayingImg {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+}
+.currentlyPlayingInfo {
+  /* background-color: cadetblue; */
+  margin-top: 10px;
+}
+.playingFlex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.addSectionButton {
+  width: 120px;
+  background-color: blue;
+  padding: 10px;
+  height: 20px;
+  margin-top: 14px;
+  text-align: center;
+  border-radius: 300px;
+}
+.addSectionButton {
+  cursor: pointer;
+}

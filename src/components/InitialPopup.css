@@ -1,0 +1,24 @@
+.initialPopup {
+  width: 600px;
+  background-color: gray;
+  border: 1px solid black;
+
+  position: absolute;
+  top: 20px;
+  left: calc(50vw - 300px);
+  height: calc(100vh - 40px);
+
+  opacity: 1;
+  overflow: scroll;
+}
+.initialPopupBackground {
+  background-color: gray;
+  opacity: 0.5;
+  width: 100vw;
+  height: 100vh;
+}
+
+.initTitle {
+  text-align: center;
+  padding: 10px;
+}

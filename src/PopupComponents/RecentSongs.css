@@ -1,0 +1,4 @@
+.recentSongsInitPopup {
+  display: flex;
+  flex-wrap: wrap;
+}

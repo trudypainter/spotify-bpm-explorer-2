@@ -1,0 +1,82 @@
+.topHeader {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+
+  height: 100px;
+  width: 100vw;
+  background-color: red;
+
+  display: flex;
+}
+.selectedSongContainer {
+  background-color: chartreuse;
+  display: flex;
+  flex-direction: row;
+}
+.selectedSongFlex {
+}
+
+.userImgWrapper {
+  width: 60px;
+  margin: auto;
+}
+
+.userImg {
+  height: 50px;
+  width: 50px;
+  border-radius: 400px;
+  padding: 10px;
+  margin: auto;
+}
+
+.bpmDisplay {
+  width: 80px;
+  text-align: center;
+  margin: auto;
+}
+
+.leftCorner {
+  width: 200px;
+  padding: 10px;
+  font-size: 28px;
+  background-color: black;
+}
+
+/* CENTER */
+.selectedSongContainer {
+  background-color: darkgray;
+  width: calc(100vw - 400px);
+}
+
+/* RIGHT */
+
+.rightCorner {
+  width: 200px;
+  background-color: black;
+}
+
+.makePlaylistButton {
+  padding: 10px;
+  text-align: center;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: gray;
+  width: 80%;
+  border-radius: 30px;
+}
+
+.resetButton {
+  padding: 10px;
+  text-align: center;
+  margin: auto;
+}
+
+.makePlaylistButton:hover {
+  cursor: pointer;
+}
+
+.resetButton:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,30 @@
+input {
+  border-style: none;
+  height: 25px;
+  margin: 10px;
+  width: 400px;
+  text-align: center;
+  margin-left: 100px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.searchContainer {
+  display: flex;
+}
+
+#initialSongSearchButton {
+  padding: 5px;
+  width: 100px;
+  text-align: center;
+  margin: 10px;
+  background-color: gray;
+}
+
+.resultsContainer {
+  display: flex;
+}

@@ -1,0 +1,80 @@
+.newSectionPopup {
+  width: 620px;
+  background-color: gray;
+  border: 1px solid black;
+
+  position: absolute;
+  top: 20px;
+  left: calc(50vw - 300px);
+
+  opacity: 1;
+  height: calc(100vh - 40px);
+  overflow: scroll;
+}
+
+.genreSection {
+  background-color: black;
+  margin: 10px;
+  padding-bottom: 10px;
+}
+
+.artistSection {
+  background-color: black;
+  margin: 10px;
+}
+
+.playlistSection {
+  background-color: black;
+  margin: 10px;
+  padding-bottom: 10px;
+}
+
+.songSection {
+  background-color: black;
+  margin: 10px;
+}
+
+.newSectionPopupBackground {
+  background-color: gray;
+  opacity: 0.5;
+  width: 100vw;
+  height: 100vh;
+}
+
+.popupSectionTitle {
+  text-align: center;
+  padding: 10px;
+}
+
+.textList {
+  height: 110px;
+  margin-left: 10px;
+  width: 580px;
+  background-color: white;
+  color: darkgray;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  overflow: scroll;
+  margin-bottom: 0px;
+}
+
+.playlistList {
+  height: 210px;
+  margin-left: 10px;
+  width: 580px;
+  background-color: white;
+  color: darkgray;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  overflow: scroll;
+  margin-bottom: 0px;
+}
+
+.textDiv:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
