@@ -561,7 +561,7 @@ const App = () => {
           <br></br>
           <SpotifyAuth
             className="spotifyButton"
-            redirectUri="http://localhost:3001/"
+            redirectUri="https://spotify-bpm-explorer.netlify.app/"
             clientID="9889f705281f4cd280769c43129189f7"
             scopes={[
               Scopes.userReadPrivate,
