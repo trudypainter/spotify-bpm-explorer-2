@@ -3,15 +3,10 @@ import "./Section.css";
 import SongItem from "../GeneralComponents/SongItem";
 
 const Section = (props) => {
+  const [entered, setEntered] = useState(true);
   return (
     <div className="sectionContainer">
-      {/*       
-      <div className="sectionImgContainer">
-         <img src={props.sectionImg} className="sectionImg" /> 
-      </div> 
-      */}
-
-      <div className="sectionTitle">{props.section.sectionTitle}</div>
+      <div className="sectionTitle">{props.section.sectionTitle} </div>
       <div className="sectionSongBox">
         {props.section.songObjs.map((songObj) => (
           <div className="sectionTest">
@@ -20,6 +15,7 @@ const Section = (props) => {
               exitNodeHandler={props.exitNodeHandler}
               onSongClickedHandler={props.onSongClickedHandler}
               songObj={songObj}
+              entered={entered}
             />
           </div>
         ))}

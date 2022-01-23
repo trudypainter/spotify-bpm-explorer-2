@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import SongSearch from "../PopupComponents/SongSearch";
 import GenreItem from "./GeneralComponents/GenreItem";
 import PlaylistItem from "./GeneralComponents/PlaylistItem";
+import ArtistItem from "./GeneralComponents/ArtistItem";
+import ArtistSearch from "./GeneralComponents/ArtistSearch";
 import "./NewSectionPopup.css";
 
 const NewSectionPopup = (props) => {
@@ -9,6 +11,7 @@ const NewSectionPopup = (props) => {
   const sortedLikedGenres = Object.fromEntries(
     Object.entries(props.likedGenres).sort(([, b], [, a]) => a - b)
   );
+  // console.log("🐶", props);
 
   return (
     <div>
@@ -57,11 +60,29 @@ const NewSectionPopup = (props) => {
           </div>
         </div>
 
-        {/* <div className="artistSection">
+        <div className="artistSection">
           <div className="popupSectionTitle">Artists You Like</div>
+          <div className="playlistList">
+            {props.likedArtists.map((artistObj) => (
+              <ArtistItem
+                enterNodeHandler={props.enterNodeHandler}
+                exitNodeHandler={props.exitNodeHandler}
+                onArtistClickedHandler={props.onArtistClickedHandler}
+                token={props.token}
+                artistObj={artistObj}
+              />
+            ))}
+          </div>
+
           <div className="popupSectionTitle">Search Artists</div>
+          <ArtistSearch
+            enterNodeHandler={props.enterNodeHandler}
+            exitNodeHandler={props.exitNodeHandler}
+            onArtistClickedHandler={props.onArtistClickedHandler}
+            token={props.token}
+          />
         </div>
-        <div className="songSection">
+        {/* <div className="songSection">
           <div className="popupSectionTitle">Recommended Compatible Songs</div>
           <SongSearch
             enterNodeHandler={props.enterNodeHandler}

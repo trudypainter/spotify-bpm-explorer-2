@@ -15,17 +15,17 @@ const InitialPopup = (props) => {
           onNodeClicked={props.onNodeClicked}
           token={props.token}
         />
-        <div className="initTitle">Or search for a song below...</div>
+        <div className="initTitle">
+          Or search for a song below... <br></br> (if songs aren't playing...
+          just click anywhere on this box and try again)
+        </div>
         <SongSearch
           enterNodeHandler={props.enterNodeHandler}
           exitNodeHandler={props.exitNodeHandler}
           onNodeClicked={props.onNodeClicked}
           token={props.token}
         />
-        <div className="initTitle">
-          (if songs aren't playing... just click anywhere on the green and try
-          again)
-        </div>
+        <div className="initTitle"></div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import SongItem from "../GeneralComponents/SongItem";
 import "./TopHeader.css";
 
 const TopHeader = (props) => {
-  console.log("🟩", props.userInfo);
+  // console.log("🟩", props.userInfo);
   useEffect(() => {}, []);
   const makePlaylistHandler = () => {
     fetch(
@@ -17,7 +17,7 @@ const TopHeader = (props) => {
         },
         body: JSON.stringify({
           name: `${parseInt(props.bpm)} BPM`,
-          description: `www.trudy.computer`,
+          description: `with help from www.trudy.computer`,
         }),
       }
     )
@@ -49,6 +49,7 @@ const TopHeader = (props) => {
           .then((response) => response.json())
           .then((data) => {
             console.log("🅱️", data);
+            alert("Made your playlist! Check in your Spotify library...");
           });
       });
   };

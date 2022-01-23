@@ -1,0 +1,14 @@
+.artistItem {
+  text-align: left;
+  width: 189.3px;
+}
+
+.artistName {
+  padding: 2px;
+  width: fit-content;
+}
+
+.artistName:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

@@ -16,12 +16,14 @@ const App = () => {
   //state management
   const [inInitialState, setInInitialState] = useState(true);
   const [inNewSectionState, setInNewSectionState] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // homepage things
   const [bpm, setBpm] = useState(0.0);
   const [selectedSongs, setSelectedSongs] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [likedGenres, setLikedGenres] = useState({});
+  const [likedArtists, setLikedArtists] = useState({});
   const [sections, setSections] = useState([]);
   const [userPlaylists, setUserPlaylists] = useState({});
 
@@ -31,6 +33,7 @@ const App = () => {
 
   // hovering for song
   const enterNodeHandler = (hoverSong) => {
+    audioRef.current.pause();
     setHoverSong(hoverSong);
     audioRef.current = new Audio(hoverSong.preview_url);
     audioRef.current.play();
@@ -127,6 +130,8 @@ const App = () => {
 
   // 💠 genre clicked
   const genreClickedHandler = (genreName) => {
+    setLoading(true);
+
     setInNewSectionState(false);
     console.log("💠", genreName);
 
@@ -198,6 +203,7 @@ const App = () => {
 
   // 💠 playlist clicked
   const playlistClickedHandler = (playlistId) => {
+    setLoading(true);
     setInNewSectionState(false);
     console.log("💠", playlistId);
 
@@ -216,19 +222,100 @@ const App = () => {
       });
   };
 
-  // load list of song objs and title
-  // adds new section
-  const getCompatibleSongsAndMakeSection = (listOfSongObjs, title) => {
-    // create list of comma separated spotify ids
-    var idList = "";
-    console.log(listOfSongObjs);
-    for (var i = 0; i < listOfSongObjs.length; i++) {
-      idList = idList + listOfSongObjs[i]["track"].id + ",";
+  // helper for getting artist objs
+  const getArtistSongObjs = (albumObjs, sofar, ix, artistName) => {
+    console.log("🐭getting", albumObjs[ix].id, sofar);
+    fetch(
+      "https://api.spotify.com/v1/albums/" +
+        albumObjs[ix].id +
+        "/tracks?market=US&limit=50",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + Cookies.get("spotifyAuthToken"),
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        // get the song obs
+        let idList = "";
+        for (var i = 0; i < data.items.length; i++) {
+          idList = idList + data.items[i]["id"] + ",";
+        }
+        idList = idList.substring(0, idList.length - 1);
+        console.log("IDLIST", idList);
+
+        fetch("https://api.spotify.com/v1/tracks?ids=" + idList, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + Cookies.get("spotifyAuthToken"),
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("🐻‍❄️TRACKS; ", data);
+            sofar.push(...data.tracks);
+
+            // then make section if done with songs
+            if (ix > albumObjs.length - 2) {
+              console.log("BOOOOM");
+              getCompatibleSongsAndMakeSection(sofar, "ARTIST: " + artistName);
+            } else {
+              getArtistSongObjs(albumObjs, [...sofar], ix + 1, artistName);
+            }
+          });
+      });
+  };
+
+  // 💠 artist clicked
+  const onArtistClickedHandler = (artistObj) => {
+    setInNewSectionState(false);
+    setLoading(true);
+    // get artists albums
+    fetch(
+      "https://api.spotify.com/v1/artists/" +
+        artistObj.id +
+        "/albums?market=US",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + Cookies.get("spotifyAuthToken"),
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("🐢 ARITST ALBUMS", data);
+
+        // then get the song obs
+        getArtistSongObjs(data.items, [], 0, artistObj.name);
+      });
+  };
+
+  // 🐞 load list of song objs and title
+
+  const compatibleHelper = (listOfSongObjs, title, offset, sofar) => {
+    // build id list
+    let idList = "";
+    for (var i = 0; i < 100; i++) {
+      if (offset + i < listOfSongObjs.length) {
+        if ("id" in listOfSongObjs[offset + i]) {
+          idList = idList + listOfSongObjs[offset + i].id + ",";
+        } else {
+          idList = idList + listOfSongObjs[offset + i]["track"].id + ",";
+        }
+      }
     }
     idList = idList.substring(0, idList.length - 1);
-    // console.log("ID LIST:", idList);
-    // batch get audio analysis request
-    let compatibleSongs = [];
+    console.log("🐯IDLIST:", idList);
+
     fetch("https://api.spotify.com/v1/audio-features?ids=" + idList, {
       method: "GET",
       headers: {
@@ -239,29 +326,129 @@ const App = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log("🐸 BPM  sound of SONGS", data);
+        console.log("🦆DATA:", data);
+
         // only add correct bpm songs
-        for (var i = 0; i < data["audio_features"].length; i++) {
+        for (var j = 0; j < data["audio_features"].length; j++) {
+          // console.log(parseFloat(data["audio_features"][i].tempo), bpm);
           if (
-            (parseFloat(data["audio_features"][i].tempo) < bpm + 3 &&
-              parseFloat(data["audio_features"][i].tempo) > bpm - 3) ||
-            (parseFloat(data["audio_features"][i].tempo) / 2 < bpm + 3 &&
-              parseFloat(data["audio_features"][i].tempo) / 2 > bpm - 3) ||
-            (parseFloat(data["audio_features"][i].tempo) * 2 < bpm + 3 &&
-              parseFloat(data["audio_features"][i].tempo) * 2 > bpm - 3)
+            (parseFloat(data["audio_features"][j].tempo) < bpm + 3 &&
+              parseFloat(data["audio_features"][j].tempo) > bpm - 3) ||
+            (parseFloat(data["audio_features"][j].tempo) / 2 < bpm + 3 &&
+              parseFloat(data["audio_features"][j].tempo) / 2 > bpm - 3) ||
+            (parseFloat(data["audio_features"][j].tempo) * 2 < bpm + 3 &&
+              parseFloat(data["audio_features"][j].tempo) * 2 > bpm - 3)
           ) {
-            compatibleSongs.push(listOfSongObjs[i]["track"]);
+            console.log(
+              "🦀COMPARTIBLE SONG OB",
+              offset,
+              data["audio_features"][j],
+              listOfSongObjs,
+              listOfSongObjs[offset + j]
+            );
+            if ("id" in listOfSongObjs[offset + j]) {
+              sofar.push(listOfSongObjs[offset + j]);
+            } else {
+              sofar.push(listOfSongObjs[offset + j]["track"]);
+            }
           }
         }
-        let sectionObj = {
-          sectionTitle: title,
-          sectionImg: "TODO",
-          songObjs: compatibleSongs,
-        };
-        // console.log("🟠", sectionObj);
-        setSections([...sections, sectionObj]);
-        // console.log("💦", compatibleSongs);
+
+        if (offset > listOfSongObjs.length - 100) {
+          console.log("🚙", sofar);
+          let sectionObj = {
+            sectionTitle: title,
+            sectionImg: "TODO",
+            songObjs: sofar,
+          };
+          setSections([...sections, sectionObj]);
+          setLoading(false);
+        } else {
+          offset = offset + 100;
+          compatibleHelper(listOfSongObjs, title, offset, sofar);
+        }
       });
+  };
+
+  // adds new section
+  const getCompatibleSongsAndMakeSection = (listOfSongObjs, title) => {
+    // create list of comma separated spotify ids
+    // NOTE: max 100 ids in one request
+    var idList = "";
+    console.log("🐣 SONG OBJS FOR NEW SECTION", listOfSongObjs);
+
+    compatibleHelper(listOfSongObjs, title, 0, []);
+    setLoading(true);
+
+    // for (
+    //   var offset = 0;
+    //   offset < listOfSongObjs.length;
+    //   offset = offset + 100
+    // ) {
+    //   idList = "";
+
+    // for (var i = 0; i < 100; i++) {
+    //   if (offset + i < listOfSongObjs.length) {
+    //     if ("id" in listOfSongObjs[offset + i]) {
+    //       idList = idList + listOfSongObjs[offset + i].id + ",";
+    //     } else {
+    //       idList = idList + listOfSongObjs[offset + i]["track"].id + ",";
+    //     }
+    //   }
+    // }
+    // idList = idList.substring(0, idList.length - 1);
+    // console.log("🐯IDLIST:", idList);
+
+    // fetch("https://api.spotify.com/v1/audio-features?ids=" + idList, {
+    //   method: "GET",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //     Authorization: "Bearer " + spotifyAuthToken,
+    //   },
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     console.log("🦆DATA:", data);
+
+    //     // only add correct bpm songs
+    //     for (var j = 0; j < data["audio_features"].length; j++) {
+    //       // console.log(parseFloat(data["audio_features"][i].tempo), bpm);
+    //       if (
+    //         (parseFloat(data["audio_features"][j].tempo) < bpm + 3 &&
+    //           parseFloat(data["audio_features"][j].tempo) > bpm - 3) ||
+    //         (parseFloat(data["audio_features"][j].tempo) / 2 < bpm + 3 &&
+    //           parseFloat(data["audio_features"][j].tempo) / 2 > bpm - 3) ||
+    //         (parseFloat(data["audio_features"][j].tempo) * 2 < bpm + 3 &&
+    //           parseFloat(data["audio_features"][j].tempo) * 2 > bpm - 3)
+    //       ) {
+    //         console.log(
+    //           "🦀COMPARTIBLE SONG OB",
+    //           offset,
+    //           data["audio_features"][j],
+    //           listOfSongObjs,
+    //           listOfSongObjs[offset - 100 + j]
+    //         );
+    //         if ("id" in listOfSongObjs[offset - 100 + j]) {
+    //           compatibleSongs.push(listOfSongObjs[offset - 100 + j]);
+    //         } else {
+    //           compatibleSongs.push(listOfSongObjs[offset - 100 + j]["track"]);
+    //         }
+    //       }
+    //     }
+
+    //     if (offset > listOfSongObjs.length - 100) {
+    //       console.log("🚙", compatibleSongs);
+    //       let sectionObj = {
+    //         sectionTitle: title,
+    //         sectionImg: "TODO",
+    //         songObjs: compatibleSongs,
+    //       };
+    //       setSections([...sections, sectionObj]);
+    //       setLoading(false);
+    //     }
+    //   });
+    // }
   };
 
   // get users top genres
@@ -307,6 +494,7 @@ const App = () => {
                 }
               }
               setLikedGenres({ ...currentGenres });
+              setLoading(false);
             });
         }
       });
@@ -327,6 +515,7 @@ const App = () => {
             enterNodeHandler={enterNodeHandler}
             setSelectedSongs={setSelectedSongs}
             onSectionSongClickedHandler={onSectionSongClickedHandler}
+            setLikedArtists={setLikedArtists}
             hoverSong={hoverSong}
             token={spotifyAuthToken}
             bpm={bpm}
@@ -336,6 +525,8 @@ const App = () => {
             setInNewSectionState={setInNewSectionState}
             setUserPlaylists={setUserPlaylists}
             userPlaylists={userPlaylists}
+            loading={loading}
+            setLoading={setLoading}
           />
           {inInitialState && (
             <InitialPopup
@@ -359,6 +550,8 @@ const App = () => {
               selectedGenres={selectedGenres}
               likedGenres={likedGenres}
               userPlaylists={userPlaylists}
+              likedArtists={likedArtists}
+              onArtistClickedHandler={onArtistClickedHandler}
             />
           )}
         </SpotifyApiContext.Provider>
@@ -368,7 +561,7 @@ const App = () => {
           <br></br>
           <SpotifyAuth
             className="spotifyButton"
-            redirectUri="https://spotify-bpm-explorer.netlify.app"
+            redirectUri="http://localhost:3001/"
             clientID="9889f705281f4cd280769c43129189f7"
             scopes={[
               Scopes.userReadPrivate,

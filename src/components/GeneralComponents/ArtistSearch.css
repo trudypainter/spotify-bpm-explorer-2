@@ -1,0 +1,45 @@
+input {
+  border-style: none;
+  height: 25px;
+  margin: 10px;
+  width: 400px;
+  text-align: center;
+  margin-left: 100px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+.searchContainer {
+  display: flex;
+  overflow: hidden;
+}
+
+#initialSongSearchButton {
+  padding: 5px;
+  width: 100px;
+  text-align: center;
+  margin: 10px;
+  background-color: gray;
+}
+
+.resultsContainer {
+  display: flex;
+}
+
+.artistResultList {
+  margin-left: 10px;
+  height: 24px;
+  width: 580px;
+  background-color: white;
+  color: darkgray;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  margin-bottom: 0px;
+  overflow: hidden;
+}

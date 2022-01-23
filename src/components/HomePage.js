@@ -22,6 +22,7 @@ const HomePage = (props) => {
         setUserInfo(data);
         getUserTopSongs();
         getUserPlaylists([], 0);
+        getUserTopArtists();
       });
   }, [props.bpm]);
 
@@ -57,7 +58,6 @@ const HomePage = (props) => {
         )
           .then((response) => response.json())
           .then((data) => {
-            console.log("🌽 TOP Medium SONGS", data);
             // CREATE FIRST SECTION WITH THE TOP SONGS
             // TODO: add filter for the different tempos
             getRecentCompatibleSongs([...data.items, ...userSongsToSearch]);
@@ -146,6 +146,49 @@ const HomePage = (props) => {
           soFarPlaylists = [...soFarPlaylists, ...data.items];
           getUserPlaylists(soFarPlaylists, offset + 50);
         }
+        props.setLoading(false);
+      });
+  };
+
+  // TODO: get user top artists
+  const getUserTopArtists = () => {
+    let artistObjs = [];
+    fetch(
+      "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=short_term",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + props.token,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("💠", data);
+        artistObjs = [...data.items];
+        fetch(
+          "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=medium_term",
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + props.token,
+            },
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            for (var i = 0; i < data.items; i++) {
+              let ix = artistObjs.findIndex(data.items[i]);
+              if (ix !== -1) {
+                artistObjs.push([...artistObjs, data.items[i]]);
+              }
+            }
+            props.setLikedArtists([...artistObjs]);
+          });
       });
   };
 
@@ -165,6 +208,8 @@ const HomePage = (props) => {
         hoverSong={props.hoverSong}
         setInNewSectionState={props.setInNewSectionState}
         userPlaylists={props.userPlaylists}
+        loading={props.loading}
+        setLoading={props.setLoading}
       />
       <div className="sectionBox">
         {props.sections.map((section) => (
@@ -174,6 +219,8 @@ const HomePage = (props) => {
             onSongClickedHandler={props.onSectionSongClickedHandler}
             token={props.token}
             section={section}
+            loading={props.loading}
+            setLoading={props.setLoading}
           />
         ))}
       </div>

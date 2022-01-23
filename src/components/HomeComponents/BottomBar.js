@@ -30,7 +30,7 @@ const BottomBar = (props) => {
         )}
       </div>
 
-      {props.userPlaylists.length > 1 && (
+      {props.userPlaylists.length > 1 && !props.loading ? (
         <div
           className="addSectionButton"
           onClick={() => {
@@ -41,6 +41,8 @@ const BottomBar = (props) => {
         >
           NEW SECTION
         </div>
+      ) : (
+        <div className="addSectionButton">loading...</div>
       )}
     </div>
   );

@@ -21,6 +21,7 @@
 .artistSection {
   background-color: black;
   margin: 10px;
+  padding-bottom: 10px;
 }
 
 .playlistSection {
