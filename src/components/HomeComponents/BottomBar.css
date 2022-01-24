@@ -21,6 +21,8 @@
 .currentlyPlayingInfo {
   /* background-color: cadetblue; */
   margin-top: 10px;
+  height: 55px;
+  overflow: hidden;
 }
 .playingFlex {
   display: flex;
@@ -30,7 +32,8 @@
 
 .addSectionButton {
   width: 120px;
-  background-color: blue;
+  background-color: #1ecf6a;
+  color: black;
   padding: 10px;
   height: 20px;
   margin-top: 14px;

@@ -109,12 +109,14 @@ const HomePage = (props) => {
             sectionTitle: "Your Recent Tracks",
             sectionImg: userInfo.images[0]["url"],
             songObjs: compatibleSongs,
+            sectionColor: "#ECF51b",
           };
         } else {
           sectionObj = {
             sectionTitle: "Your Recent Tracks",
             sectionImg: "none",
             songObjs: compatibleSongs,
+            sectionColor: "#ECF51b",
           };
         }
 

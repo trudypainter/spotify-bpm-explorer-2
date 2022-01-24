@@ -60,7 +60,8 @@
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
-  background-color: gray;
+  background-color: #9dcdff;
+  color: black;
   width: 80%;
   border-radius: 30px;
 }

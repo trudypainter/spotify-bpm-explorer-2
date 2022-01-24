@@ -4,9 +4,16 @@ import SongItem from "../GeneralComponents/SongItem";
 
 const Section = (props) => {
   const [entered, setEntered] = useState(true);
+  const headingStyle = {
+    backgroundColor: props.section.sectionColor,
+  };
+  console.log("🍓HEADING", headingStyle);
+
   return (
     <div className="sectionContainer">
-      <div className="sectionTitle">{props.section.sectionTitle} </div>
+      <div style={headingStyle} className="sectionTitle">
+        <div className="titleText">{props.section.sectionTitle} </div>
+      </div>
       <div className="sectionSongBox">
         {props.section.songObjs.map((songObj) => (
           <div className="sectionTest">

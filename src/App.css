@@ -1,10 +1,10 @@
 .app {
   background-color: black;
   height: 100vh;
-  color: white;
+  color: #fefefe;
 }
 .loginDiv {
-  color: white;
+  color: #fefefe;
   width: 100vw;
   text-align: center;
   padding-top: 50px;
@@ -12,7 +12,7 @@
 }
 
 a {
-  color: white;
+  color: #fefefe;
 }
 
 button {

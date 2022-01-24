@@ -172,7 +172,11 @@ const App = () => {
             genreSongObjs = [...data["items"]];
 
             let genreSectionTitle = "GENRE: " + genreName;
-            getCompatibleSongsAndMakeSection(genreSongObjs, genreSectionTitle);
+            getCompatibleSongsAndMakeSection(
+              genreSongObjs,
+              genreSectionTitle,
+              "#fe5d5c"
+            );
           });
       });
   };
@@ -195,7 +199,8 @@ const App = () => {
         } else {
           getCompatibleSongsAndMakeSection(
             [...sofar, ...data.items],
-            "PLAYLIST: " + playlistName
+            "PLAYLIST: " + playlistName,
+            "#FE97ca"
           );
         }
       });
@@ -264,7 +269,11 @@ const App = () => {
             // then make section if done with songs
             if (ix > albumObjs.length - 2) {
               console.log("BOOOOM");
-              getCompatibleSongsAndMakeSection(sofar, "ARTIST: " + artistName);
+              getCompatibleSongsAndMakeSection(
+                sofar,
+                "ARTIST: " + artistName,
+                "#FF8239"
+              );
             } else {
               getArtistSongObjs(albumObjs, [...sofar], ix + 1, artistName);
             }
@@ -301,7 +310,13 @@ const App = () => {
 
   // 🐞 load list of song objs and title
 
-  const compatibleHelper = (listOfSongObjs, title, offset, sofar) => {
+  const compatibleHelper = (
+    listOfSongObjs,
+    title,
+    offset,
+    sofar,
+    sectionColor
+  ) => {
     // build id list
     let idList = "";
     for (var i = 0; i < 100; i++) {
@@ -354,101 +369,36 @@ const App = () => {
           }
         }
 
-        if (offset > listOfSongObjs.length - 100) {
+        if (offset > listOfSongObjs.length - 101) {
           console.log("🚙", sofar);
           let sectionObj = {
             sectionTitle: title,
             sectionImg: "TODO",
+            sectionColor: sectionColor,
             songObjs: sofar,
           };
           setSections([...sections, sectionObj]);
           setLoading(false);
         } else {
           offset = offset + 100;
-          compatibleHelper(listOfSongObjs, title, offset, sofar);
+          compatibleHelper(listOfSongObjs, title, offset, sofar, sectionColor);
         }
       });
   };
 
   // adds new section
-  const getCompatibleSongsAndMakeSection = (listOfSongObjs, title) => {
+  const getCompatibleSongsAndMakeSection = (
+    listOfSongObjs,
+    title,
+    sectionColor
+  ) => {
     // create list of comma separated spotify ids
     // NOTE: max 100 ids in one request
     var idList = "";
-    console.log("🐣 SONG OBJS FOR NEW SECTION", listOfSongObjs);
+    console.log("🐣 SONG OBJS FOR NEW SECTION", listOfSongObjs, sectionColor);
 
-    compatibleHelper(listOfSongObjs, title, 0, []);
+    compatibleHelper(listOfSongObjs, title, 0, [], sectionColor);
     setLoading(true);
-
-    // for (
-    //   var offset = 0;
-    //   offset < listOfSongObjs.length;
-    //   offset = offset + 100
-    // ) {
-    //   idList = "";
-
-    // for (var i = 0; i < 100; i++) {
-    //   if (offset + i < listOfSongObjs.length) {
-    //     if ("id" in listOfSongObjs[offset + i]) {
-    //       idList = idList + listOfSongObjs[offset + i].id + ",";
-    //     } else {
-    //       idList = idList + listOfSongObjs[offset + i]["track"].id + ",";
-    //     }
-    //   }
-    // }
-    // idList = idList.substring(0, idList.length - 1);
-    // console.log("🐯IDLIST:", idList);
-
-    // fetch("https://api.spotify.com/v1/audio-features?ids=" + idList, {
-    //   method: "GET",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //     Authorization: "Bearer " + spotifyAuthToken,
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("🦆DATA:", data);
-
-    //     // only add correct bpm songs
-    //     for (var j = 0; j < data["audio_features"].length; j++) {
-    //       // console.log(parseFloat(data["audio_features"][i].tempo), bpm);
-    //       if (
-    //         (parseFloat(data["audio_features"][j].tempo) < bpm + 3 &&
-    //           parseFloat(data["audio_features"][j].tempo) > bpm - 3) ||
-    //         (parseFloat(data["audio_features"][j].tempo) / 2 < bpm + 3 &&
-    //           parseFloat(data["audio_features"][j].tempo) / 2 > bpm - 3) ||
-    //         (parseFloat(data["audio_features"][j].tempo) * 2 < bpm + 3 &&
-    //           parseFloat(data["audio_features"][j].tempo) * 2 > bpm - 3)
-    //       ) {
-    //         console.log(
-    //           "🦀COMPARTIBLE SONG OB",
-    //           offset,
-    //           data["audio_features"][j],
-    //           listOfSongObjs,
-    //           listOfSongObjs[offset - 100 + j]
-    //         );
-    //         if ("id" in listOfSongObjs[offset - 100 + j]) {
-    //           compatibleSongs.push(listOfSongObjs[offset - 100 + j]);
-    //         } else {
-    //           compatibleSongs.push(listOfSongObjs[offset - 100 + j]["track"]);
-    //         }
-    //       }
-    //     }
-
-    //     if (offset > listOfSongObjs.length - 100) {
-    //       console.log("🚙", compatibleSongs);
-    //       let sectionObj = {
-    //         sectionTitle: title,
-    //         sectionImg: "TODO",
-    //         songObjs: compatibleSongs,
-    //       };
-    //       setSections([...sections, sectionObj]);
-    //       setLoading(false);
-    //     }
-    //   });
-    // }
   };
 
   // get users top genres
@@ -561,7 +511,8 @@ const App = () => {
           <br></br>
           <SpotifyAuth
             className="spotifyButton"
-            redirectUri="https://spotify-bpm-explorer.netlify.app/"
+            // redirectUri="https://spotify-bpm-explorer.netlify.app"
+            redirectUri="http://localhost:3001/"
             clientID="9889f705281f4cd280769c43129189f7"
             scopes={[
               Scopes.userReadPrivate,
